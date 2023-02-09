@@ -6,6 +6,7 @@ import * as Zod from "zod";
 
 import { SearchFormContainer } from "./styles";
 import { TransactionsContext } from "../../contexts/TransactionsContext";
+import { useContextSelector } from "use-context-selector";
 
 const searchFormSchema = Zod.object({
   query: Zod.string(),
@@ -21,7 +22,12 @@ export function SearchForm() {
   } = useForm<SearchDataForm>({
     resolver: zodResolver(searchFormSchema),
   });
-  const { fetchTransactions } = useContext(TransactionsContext);
+  const fetchTransactions = useContextSelector(
+    TransactionsContext,
+    (context) => {
+      return context.fetchTransactions;
+    }
+  );
 
   const onSubmit = async (data: SearchDataForm) => {
     await fetchTransactions(data.query);
